@@ -1,48 +1,46 @@
 import "./App.css";
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
-import { Empty, Layout, Menu } from "antd";
+import {Route, Routes, Navigate, useLocation} from "react-router-dom";
+import {Empty, Layout, Menu} from "antd";
 import EpisodesList from "./app/components/EpisodesList";
-import CharactersList from "./app/components/CharactersList";
-import { Link,  } from "react-router-dom";
+import {
+    CharactersListAll,
+    CharactersListForEpisode
+} from "./app/components/CharactersList";
+import {Link,} from "react-router-dom";
 
-const { Content, Sider } = Layout;
+const {Content, Sider} = Layout;
 
-function App() {
-  const location = useLocation();
-console.log(location.pathname);
+const App = () => {
+    const location = useLocation();
 
-  return (
-    <Layout className="layout">
-      <Sider className="sider">
-        <br />
-        <Menu theme="dark" selectedKeys={[location.pathname]} mode="inline">
-          <Menu.Item key="/episodes-list">
-            <Link to="/episodes-list">Episodes</Link>
-          </Menu.Item>
-          <Menu.Item key="/Characters-list">
-            <Link to="/Characters-list">Characters</Link>
-          </Menu.Item>
-        </Menu>
-      </Sider>
+    return (
+        <Layout className="layout">
+            <Sider className="sider">
+                <br/>
+                <Menu theme="dark" selectedKeys={[location.pathname]} mode="inline">
+                    <Menu.Item key="/episodes-list">
+                        <Link to="/episodes-list">Episodes</Link>
+                    </Menu.Item>
+                    <Menu.Item key="/Characters-list">
+                        <Link to="/Characters-list">Characters</Link>
+                    </Menu.Item>
+                </Menu>
+            </Sider>
 
-      <Content className="content">
-        <Routes>
-          <Route path="/" element={<Navigate replace to="/episodes-list" />} />
-
-          <Route path="/episodes-list" element={<EpisodesList />} />
-
-          <Route
-            path="/episodes-list/:episodeId/characters-list"
-            element={<CharactersList compType="byEpisode" />}
-          />
-
-          <Route path="/characters-list" element={<CharactersList compType="all" />} />
-
-          <Route path="*" element={<Empty />} />
-        </Routes>
-      </Content>
-    </Layout>
-  );
+            <Content className="content">
+                <Routes>
+                    <Route path="/" element={<Navigate replace to="/episodes-list"/>}/>
+                    <Route path="/episodes-list" element={<EpisodesList/>}/>
+                    <Route
+                        path="/episodes-list/:episodeId/characters-list"
+                        element={<CharactersListForEpisode/>}
+                    />
+                    <Route path="/characters-list" element={<CharactersListAll/>}/>
+                    <Route path="*" element={<Empty/>}/>
+                </Routes>
+            </Content>
+        </Layout>
+    );
 }
 
 export default App;

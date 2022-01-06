@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ApolloProvider } from "@apollo/client";
-import { apolloClient } from "../src/app/hoc/Apollo";
+import { apolloClient } from "./app/hoc/Apollo";
 import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(

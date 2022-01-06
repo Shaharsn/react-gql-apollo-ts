@@ -1,67 +1,54 @@
-import { useState, useEffect } from "react";
+import {useState} from "react";
 import ReactLoading from "react-loading";
 
-import { Collapse, Pagination } from "antd";
-import { Episodes } from "../types/types";
-import { useGetAllEpisodes } from "../gql/episodes";
+import {Collapse, Pagination} from "antd";
+import {useGetAllEpisodes} from "../gql/episodes";
 import EpisodeInfo from "./EpisodeInfo";
 
+const {Panel} = Collapse;
+
 const EpisodesList = () => {
-  const { Panel } = Collapse;
-  const [pageNum, setPageNum] = useState(1);
+    const [pageNum, setPageNum] = useState(1);
 
-  const [episodes, setEpisodes] = useState<Episodes>();
+    const {loading, error, data} = useGetAllEpisodes(pageNum);
+    const episodes = data?.episodes;
 
-  const [loadEpisodes, { loading, error, data }] = useGetAllEpisodes(1);
+    // Pagination
+    const moveToPage = (page: number) => {
+        setPageNum(page);
+    };
 
-  // To run the Episode Query on load
-  useEffect(() => {
-    loadEpisodes();
-  }, [loadEpisodes]);
+    if (error) {
+        console.log(JSON.stringify(error));
+        return <p>ERROR: {error.message}</p>;
+    }
 
-  // To update the Episode list on data change
-  useEffect(() => {
-    if (data) setEpisodes(data.episodes);
-  }, [data]);
+    if (loading) {
+        return <ReactLoading type="bars" color="#55555"/>;
+    }
 
-  // Pagination
-  const moveToPage = (page: number) => {
-    setPageNum(page);
-    loadEpisodes({ variables: { pageNum: page } });
-  };
+    return (
+        <>
+            <Pagination
+                className="pagination"
+                showSizeChanger={false}
+                current={pageNum}
+                defaultPageSize={20}
+                total={episodes?.info.count ? episodes?.info.count : 0}
+                onChange={moveToPage}
+            />
 
-  if (error) {
-    console.log(JSON.stringify(error));
-
-    return <p>ERROR: {error.message}</p>;
-  }
-
-  if (loading) {
-    return <ReactLoading type="bars" color="#55555" />;
-  }
-
-  return (
-    <>
-      <Pagination
-        className="pagination"
-        showSizeChanger={false}
-        current={pageNum}
-        defaultPageSize={20}
-        total={episodes?.info.count ? episodes?.info.count : 0}
-        onChange={moveToPage}
-      />
-
-      <Collapse>
-        {episodes?.results.map((episode) => (
-          <Panel
-            header={`${episode.episode} | ${episode.name}`}
-            key={episode.id}
-          >
-            <EpisodeInfo {...episode} />
-          </Panel>
-        ))}
-      </Collapse>
-    </>
-  );
+            <Collapse>
+                {episodes?.results.map((episode) => (
+                    <Panel
+                        header={`${episode.episode} | ${episode.name}`}
+                        key={episode.id}
+                    >
+                        <EpisodeInfo {...episode} />
+                    </Panel>
+                ))}
+            </Collapse>
+        </>
+    );
 };
 export default EpisodesList;
