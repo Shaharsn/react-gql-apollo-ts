@@ -1,4 +1,4 @@
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { Characters, Episode, Episodes } from "../types/types";
 
 // GQL QUERIES
@@ -88,19 +88,19 @@ export interface CharactersForEpisodeResponse {
 
 // GQL QUERIES METHODS
 export const useGetAllEpisodes = (pageNum: number) => {
-  return useLazyQuery<EpisodesResponse, PageInput>(GET_ALL_EPISODES, {
+  return useQuery<EpisodesResponse, PageInput>(GET_ALL_EPISODES, {
     variables: { pageNum },
   });
 };
 
 export const useGetAllCharacters = (pageNum: number) => {
-  return useLazyQuery<CharactersResponse, PageInput>(GET_ALL_CHARACTERS, {
+  return useQuery<CharactersResponse, PageInput>(GET_ALL_CHARACTERS, {
     variables: { pageNum },
   });
 };
 
 export const useGetCharacterForEpisode = (episodeId: string) => {
-  return useLazyQuery<CharactersForEpisodeResponse, CharactersForEpisodeInput>(
+  return useQuery<CharactersForEpisodeResponse, CharactersForEpisodeInput>(
     GET_CHARACTERS_FOR_EPISODE,
     {
       variables: { episodeId },

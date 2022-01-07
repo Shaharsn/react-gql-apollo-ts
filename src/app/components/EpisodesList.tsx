@@ -1,33 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReactLoading from "react-loading";
 
 import { Collapse, Pagination } from "antd";
-import { Episodes } from "../types/types";
 import { useGetAllEpisodes } from "../gql/episodes";
 import EpisodeInfo from "./EpisodeInfo";
+const { Panel } = Collapse;
 
 const EpisodesList = () => {
-  const { Panel } = Collapse;
   const [pageNum, setPageNum] = useState(1);
 
-  const [episodes, setEpisodes] = useState<Episodes>();
-
-  const [loadEpisodes, { loading, error, data }] = useGetAllEpisodes(1);
-
-  // To run the Episode Query on load
-  useEffect(() => {
-    loadEpisodes();
-  }, [loadEpisodes]);
-
-  // To update the Episode list on data change
-  useEffect(() => {
-    if (data) setEpisodes(data.episodes);
-  }, [data]);
+  const { loading, error, data } = useGetAllEpisodes(pageNum);
+  const episodes = data?.episodes.results ? data.episodes.results : [];
+  const episodesCount = data?.episodes.info.count ? data?.episodes.info.count : 0;
 
   // Pagination
   const moveToPage = (page: number) => {
     setPageNum(page);
-    loadEpisodes({ variables: { pageNum: page } });
   };
 
   if (error) {
@@ -47,12 +35,12 @@ const EpisodesList = () => {
         showSizeChanger={false}
         current={pageNum}
         defaultPageSize={20}
-        total={episodes?.info.count ? episodes?.info.count : 0}
+        total={episodesCount ? episodesCount : 0}
         onChange={moveToPage}
       />
 
       <Collapse>
-        {episodes?.results.map((episode) => (
+        {episodes.map((episode) => (
           <Panel
             header={`${episode.episode} | ${episode.name}`}
             key={episode.id}

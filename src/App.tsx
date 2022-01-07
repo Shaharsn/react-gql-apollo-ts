@@ -2,14 +2,14 @@ import "./App.css";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { Empty, Layout, Menu } from "antd";
 import EpisodesList from "./app/components/EpisodesList";
-import CharactersList from "./app/components/CharactersList";
-import { Link,  } from "react-router-dom";
+import { Link } from "react-router-dom";
+import CharactersAll from "./app/components/CharactersAll";
+import CharactersByEpisode from "./app/components/CharactersByEpisode";
 
 const { Content, Sider } = Layout;
 
-function App() {
+const App = () => {
   const location = useLocation();
-console.log(location.pathname);
 
   return (
     <Layout className="layout">
@@ -33,16 +33,16 @@ console.log(location.pathname);
 
           <Route
             path="/episodes-list/:episodeId/characters-list"
-            element={<CharactersList compType="byEpisode" />}
+            element={<CharactersByEpisode />}
           />
 
-          <Route path="/characters-list" element={<CharactersList compType="all" />} />
+          <Route path="/characters-list" element={<CharactersAll />} />
 
           <Route path="*" element={<Empty />} />
         </Routes>
       </Content>
     </Layout>
   );
-}
+};
 
 export default App;
