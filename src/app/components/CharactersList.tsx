@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Character } from "../types/types";
 import CharacterCard from "./CharacterCard";
 import { Col, Pagination, Row, Input } from "antd";
@@ -10,34 +10,36 @@ interface CharactersListProps {
   moveToPage?: (pageNum: number) => void;
 }
 const CharactersList = (props: CharactersListProps) => {
+  const {characters, count, pageNum, moveToPage} = props;
+  
   const [charactersFilteredList, setCharactersFilteredList] = useState(
-    props.characters
+    characters
   );
+
+  useEffect(() => {
+    setCharactersFilteredList(characters)
+  }, [characters])
 
   // Filtering the list by the input string
   const onFilterChange = (event: React.FormEvent<HTMLInputElement>) => {
     const characterName = event.currentTarget.value;
 
-    setCharactersFilteredList(Object.assign([], props.characters));
-
-    setCharactersFilteredList((currentArr) => {
-      return currentArr?.filter((character) =>
-        character.name.toLowerCase().includes(characterName.toLowerCase())
-      );
-    });
+    setCharactersFilteredList(characters.filter((character) =>
+      character.name.toLowerCase().includes(characterName.toLowerCase())
+    ));
   };
 
   return (
     <>
-      {props.count && props.pageNum && props.moveToPage && (
+      {count && pageNum && moveToPage && (
         <>
           <Pagination
             className="pagination"
             showSizeChanger={false}
-            current={props.pageNum}
+            current={pageNum}
             defaultPageSize={20}
-            total={props.count}
-            onChange={props.moveToPage}
+            total={count}
+            onChange={moveToPage}
           />
 
           <Input
